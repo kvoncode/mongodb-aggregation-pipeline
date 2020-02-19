@@ -1,6 +1,7 @@
 # Aggregation pipeline
 
-## Complex request
+## `$match` and `$project`
+
 ```
 var pipeline = [
   {
@@ -24,6 +25,25 @@ var pipeline = [
       _id: 0,
       title: 1,
       rated: 1
+    }
+  }
+];
+
+```
+
+## Filter one word titles
+
+```
+var pipeline = [
+  {
+    $project: {
+      _id: 0,
+      wordCount: { $size: { $split: ["$title", " "] } }
+    }
+  },
+  {
+    $match: {
+      wordCount: 1
     }
   }
 ];
