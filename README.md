@@ -54,3 +54,16 @@ var pipeline = [
 ];
 
 ```
+
+## Cursor-like stages
+
+- Match for movies released in the `USA`, with `tomatoes.viewer.rating >= 3`
+- Create `favArray` as map of `cast` array. Return null if array element not in `favorites` array, else return element itself
+- Pull null values from `favArray` 
+- Add field `num_favs` which is the size of array `favArray`
+- Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order 
+
+
+```
+
+```
