@@ -1,7 +1,3 @@
-# Aggregation pipeline
-
-## Complex request
-```
 var pipeline = [
   {
     $match: {
@@ -27,5 +23,3 @@ var pipeline = [
     }
   }
 ];
-
-```
