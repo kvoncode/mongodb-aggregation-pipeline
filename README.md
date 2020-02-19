@@ -63,7 +63,59 @@ var pipeline = [
 - Add field `num_favs` which is the size of array `favArray`
 - Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order 
 
+Scratch
 
 ```
+var pipeline = [
+  {
+    $match: {
+      coutry: {
+        $in: ["USA"]
+      },
+      "tomatoes.viewer.rating": {
+        $gte: 3
+      }
+    }
+  },
+  {
+    $addFields: {
+      favArray: 
+    }
+  },
+  {
+    $addFields: {
+      num_favs: {
+        $size: "$favArray"
+      }
+    }
+  },
+  {
+    $sort: {
+      num_favs: -1,
+      "tomatoes.viewer.rating": -1,
+      title: -1
+    }
+  },
+  {
+    $skip: 24
+  }
+];
+
+```
+
+Current
+```
+var pipeline = [
+  {
+    $match: {
+      countries: {
+        $in: ["USA"]
+      },
+      "tomatoes.viewer.rating": {
+        $gte: 3
+      }
+    }
+  }
+];
 
 ```
