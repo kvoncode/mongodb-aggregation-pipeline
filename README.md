@@ -1,5 +1,10 @@
 # Aggregation pipeline
 
+Apply pipeline with
+```
+db.movies.aggregate(pipeline).itcount()
+```
+
 ## `$match` and `$project`
 
 ```
