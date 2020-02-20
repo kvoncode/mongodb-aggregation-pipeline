@@ -1,6 +1,7 @@
 # Aggregation pipeline
 
 Apply pipeline with
+
 ```
 db.movies.aggregate(pipeline).itcount()
 ```
@@ -58,10 +59,10 @@ var pipeline = [
 ## Cursor-like stages
 
 - Match for movies released in the `USA`, with `tomatoes.viewer.rating >= 3`
-- Create `favArray` as map of `cast` array. Return null if array element not in `favorites` array, else return element itself
-- Pull null values from `favArray` 
+- Create new field `favArray`. It's an array that contains matched names of favorite actors.
+
 - Add field `num_favs` which is the size of array `favArray`
-- Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order 
+- Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order
 
 Scratch
 
@@ -79,7 +80,7 @@ var pipeline = [
   },
   {
     $addFields: {
-      favArray: 
+      favArray:
     }
   },
   {
@@ -104,6 +105,7 @@ var pipeline = [
 ```
 
 Current
+
 ```
 var pipeline = [
   {
@@ -115,7 +117,22 @@ var pipeline = [
         $gte: 3
       }
     }
+  },
+  {
+    $addFields: {
+      num_favs: {
+        $size: "$countries"
+      }
+    }
+  },
+  {
+    $sort: {
+        num_favs: -1,
+      "tomatoes.viewer.rating": -1,
+      title: -1
+    }
   }
 ];
+
 
 ```
