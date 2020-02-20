@@ -11,19 +11,15 @@ var pipeline = [
   },
   {
     $addFields: {
-      favArray: [
-        "Sandra Bullock",
-        "Tom Hanks",
-        "Julia Roberts",
-        "Kevin Spacey",
-        "George Clooney"
-      ]
+      favArray: {
+        $cond: { if: false, then: "Sandra Bullock", else: null }
+      }
     }
   },
   {
     $addFields: {
       num_favs: {
-        $size: "$favArray"
+        $size: "$countries"
       }
     }
   },
