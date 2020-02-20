@@ -64,22 +64,8 @@ var pipeline = [
 - Add field `num_favs` which is the size of array `favArray`
 - Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order
 
-Scratch
 
-```
-var pipeline = [
-
-  {
-    $skip: 24
-  }
-];
-
-```
-
-Current
-
-```
-var pipeline = [
+```var pipeline = [
   {
     $match: {
       countries: {
@@ -87,20 +73,31 @@ var pipeline = [
       },
       "tomatoes.viewer.rating": {
         $gte: 3
+      },
+      cast: {
+        $exists: true
       }
     }
   },
+
   {
     $addFields: {
       favArray: {
-        $cond: { if: false, then: "Sandra Bullock", else: null }
+        $filter: {
+          input: "$cast",
+          as: "cast",
+          cond: {
+            $in: ["$$cast", favorites]
+          }
+        }
       }
     }
   },
+
   {
     $addFields: {
       num_favs: {
-        $size: "$countries"
+        $size: "$favArray"
       }
     }
   },
@@ -119,9 +116,10 @@ var pipeline = [
       favArray: 1,
       cast: 1
     }
+  },
+  {
+      $skip: 24
   }
 ];
-
-
 
 ```
