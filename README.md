@@ -209,3 +209,10 @@ var pipeline = [
 
 
 ```
+
+## `$group` and accumulators
+
+- Match movies that won an Oscar
+
+```
+```
