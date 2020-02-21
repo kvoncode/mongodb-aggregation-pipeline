@@ -31,8 +31,27 @@ var pipeline = [
       }
     }
   },
+  {
+    $addFields: {
+      normalized_rating: 10
+    }
+  },
+  {
+    $sort: {
+      normalized_rating: 1
+    }
+  },
+  {
+    // $count: "existing number"
+    $limit: 3
+  },
 
   {
-    $count: "existing number"
+    $project: {
+      _id: 0,
+      title: 1,
+      "imdb.votes": 1,
+      normalized_rating: 1
+    }
   }
 ];
