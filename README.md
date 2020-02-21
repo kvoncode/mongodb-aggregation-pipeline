@@ -58,9 +58,8 @@ var pipeline = [
 
 ## Cursor-like stages
 
-- Match for movies released in the `USA`, with `tomatoes.viewer.rating >= 3`
-- Create new field `favArray`. It's an array that contains matched names of favorite actors.
-
+- Match for movies released in the `USA`, with `tomatoes.viewer.rating >= 3`, and existing `cast` field (or query trigger error)
+- Create new field `favArray`. It's filtered `cast` array. Filtered based on `favorites` array of names of favorite actors
 - Add field `num_favs` which is the size of array `favArray`
 - Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order
 
@@ -119,6 +118,36 @@ var pipeline = [
   },
   {
       $skip: 24
+  }
+];
+
+```
+## Feature scaling
+
+- Check for existing
+- Apply `$match` again with comparing
+
+```
+var pipeline = [
+  {
+    $match: {
+      languages: {
+        $exists: true
+      },
+      released: {
+        $exists: true
+      },
+      "imdb.rating": {
+        $exists: true
+      },
+      "imdb.votes": {
+        $exists: true
+      }
+    }
+  },
+
+  {
+    $count: "existing number"
   }
 ];
 
