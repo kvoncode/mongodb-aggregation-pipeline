@@ -15,6 +15,22 @@ var pipeline = [
       }
     }
   },
+  {
+    $match: {
+      languages: {
+        $in: ["English"]
+      },
+      "imdb.rating": {
+        $gte: 1
+      },
+      "imdb.votes": {
+        $gte: 1
+      },
+      released: {
+        $gte: new Date("1990-1-1")
+      }
+    }
+  },
 
   {
     $count: "existing number"
