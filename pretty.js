@@ -33,7 +33,29 @@ var pipeline = [
   },
   {
     $addFields: {
-      normalized_rating: 10
+      scaled_votes: {
+        $add: [
+          1,
+          {
+            $multiply: [
+              9,
+              {
+                $divide: [
+                  { $subtract: ["$imdb.votes", 5] },
+                  { $subtract: [1521105, 5] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    $addFields: {
+      normalized_rating: {
+        $avg: ["$scaled_votes", "$imdb.rating"]
+      }
     }
   },
   {
@@ -51,6 +73,8 @@ var pipeline = [
       _id: 0,
       title: 1,
       "imdb.votes": 1,
+      scaled_votes: 1,
+      "imdb.rating": 1,
       normalized_rating: 1
     }
   }

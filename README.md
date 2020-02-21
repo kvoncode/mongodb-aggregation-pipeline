@@ -63,7 +63,6 @@ var pipeline = [
 - Add field `num_favs` which is the size of array `favArray`
 - Sort for `num_favs, tomatoes.viewer.rating, and title` in descending order
 
-
 ```var pipeline = [
   {
     $match: {
@@ -122,10 +121,8 @@ var pipeline = [
 ];
 
 ```
-## Feature scaling
 
-- Check for existing
-- Apply `$match` again with comparing
+## Feature scaling
 
 ```
 var pipeline = [
@@ -161,9 +158,52 @@ var pipeline = [
       }
     }
   },
+  {
+    $addFields: {
+      scaled_votes: {
+        $add: [
+          1,
+          {
+            $multiply: [
+              9,
+              {
+                $divide: [
+                  { $subtract: ["$imdb.votes", 5] },
+                  { $subtract: [1521105, 5] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    $addFields: {
+      normalized_rating: {
+        $avg: ["$scaled_votes", "$imdb.rating"]
+      }
+    }
+  },
+  {
+    $sort: {
+      normalized_rating: 1
+    }
+  },
+  {
+    // $count: "existing number"
+    $limit: 3
+  },
 
   {
-    $count: "existing number"
+    $project: {
+      _id: 0,
+      title: 1,
+      "imdb.votes": 1,
+      scaled_votes: 1,
+      "imdb.rating": 1,
+      normalized_rating: 1
+    }
   }
 ];
 
