@@ -218,7 +218,11 @@ var pipeline = [
 ```
 var pipeline = [
   {
-    $limit: 3
+    $match: {
+      awards: {
+        $regex: "^Won [0-9]+ Oscar(s)?"
+      }
+    }
   },
   {
     $group: {
@@ -237,6 +241,19 @@ var pipeline = [
       }
     }
   }
+  // {
+  //   $count: "won Oscar"
+  // }
+  // {
+  //   $limit: 3
+  // },
+  // {
+  //   $project: {
+  //     _id: 0,
+  //     title: 1,
+  //     awards: 1
+  //   }
+  // }
 ];
 
 ```
