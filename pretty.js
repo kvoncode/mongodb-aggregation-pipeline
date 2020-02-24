@@ -1,39 +1,36 @@
 var pipeline = [
   {
     $match: {
-      awards: {
-        $regex: "^Won [0-9]+ Oscar(s)?"
+      languages: {
+        $exists: true
+      },
+      cast: {
+        $exists: true
       }
     }
   },
   {
-    $group: {
-      _id: null,
-      ratingDeviation: {
-        $stdDevSamp: "$imdb.rating"
-      },
-      maxRating: {
-        $max: "$imdb.rating"
-      },
-      minRating: {
-        $min: "$imdb.rating"
-      },
-      averageRating: {
-        $avg: "$imdb.rating"
+    $match: {
+      languages: {
+        $in: ["English"]
       }
     }
+  },
+  {
+    $unwind: "$cast"
+  },
+  {
+    $limit: 3
+  },
+  {
+    $project: {
+      _id: 0,
+      title: 1,
+      cast: 1
+    }
   }
+
   // {
-  //   $count: "won Oscar"
-  // }
-  // {
-  //   $limit: 3
-  // },
-  // {
-  //   $project: {
-  //     _id: 0,
-  //     title: 1,
-  //     awards: 1
-  //   }
+  //   $count: "movies in English"
   // }
 ];

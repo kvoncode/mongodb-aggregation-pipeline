@@ -257,3 +257,50 @@ var pipeline = [
 ];
 
 ```
+
+## `$unwind`
+
+- Match `languages` as English (`languages` is `string/array/undefined`)
+- Unwind `cast` field (`cast` is `string/array/undefined`)
+- Group by same person statistics
+
+
+```
+var pipeline = [
+  {
+    $match: {
+      languages: {
+        $exists: true
+      },
+      cast: {
+        $exists: true
+      }
+    }
+  },
+  {
+    $match: {
+      languages: {
+        $in: ["English"]
+      }
+    }
+  },
+  {
+    $unwind: "$cast"
+  },
+  {
+    $limit: 3
+  },
+  {
+    $project: {
+      _id: 0,
+      title: 1,
+      cast: 1
+    }
+  }
+
+  // {
+  //   $count: "movies in English"
+  // }
+];
+
+```
