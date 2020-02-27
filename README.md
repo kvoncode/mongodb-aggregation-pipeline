@@ -304,3 +304,56 @@ var pipeline = [
 ];
 
 ```
+
+
+## `$lookup`
+
+- Use `$lookup` to perform **Left outer join** on `air_alliances` and `air_routes` collections
+- `air_alliances` have `airlines` field, which is **array of strings**
+- `air_routes` have `airline.name` field. Type of **string**
+- When using `$lookup` on array of strings mongodb uses equality match on any of the array elements
+- In `allianceRoutes` field sort only those documents whose `aiplane`field is either `747` or `380`
+- Calculate the array length and sort by it
+
+```
+var pipeline = [
+  {
+    $lookup: {
+      from: "air_routes",
+      localField: "airlines",
+      foreignField: "airline.name",
+      as: "allianceRoutes"
+    }
+  },
+  {
+    $addFields: {
+      filteredArray: {
+        $filter: {
+          input: "$allianceRoutes",
+          as: "route",
+          cond: { 
+            $in: ["$$route.airplane", ["747", "380"]]
+          }
+        }
+      }
+    }
+  },
+  {
+    $addFields: {
+      matchedRoutes: {
+        $size: "$filteredArray"
+      }
+    }
+  },
+
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      matchedRoutes: 1
+    }
+  }
+];
+
+
+```

@@ -1,36 +1,38 @@
 var pipeline = [
   {
-    $match: {
-      languages: {
-        $exists: true
-      },
-      cast: {
-        $exists: true
+    $lookup: {
+      from: "air_routes",
+      localField: "airlines",
+      foreignField: "airline.name",
+      as: "allianceRoutes"
+    }
+  },
+  {
+    $addFields: {
+      filteredArray: {
+        $filter: {
+          input: "$allianceRoutes",
+          as: "route",
+          cond: { 
+            $in: ["$$route.airplane", ["747", "380"]]
+          }
+        }
       }
     }
   },
   {
-    $match: {
-      languages: {
-        $in: ["English"]
+    $addFields: {
+      matchedRoutes: {
+        $size: "$filteredArray"
       }
     }
   },
-  {
-    $unwind: "$cast"
-  },
-  {
-    $limit: 3
-  },
+
   {
     $project: {
       _id: 0,
-      title: 1,
-      cast: 1
+      name: 1,
+      matchedRoutes: 1
     }
   }
-
-  // {
-  //   $count: "movies in English"
-  // }
 ];
