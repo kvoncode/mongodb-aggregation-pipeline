@@ -1,38 +1,62 @@
 var pipeline = [
   {
-    $lookup: {
-      from: "air_routes",
-      localField: "airlines",
-      foreignField: "airline.name",
-      as: "allianceRoutes"
+    $match: {
+      "imdb.rating": {
+        $exists: true
+      },
+      metacritic: {
+        $exists: true
+      },
+      "imdb.rating": {
+        $ne: ""
+      },
+      metacritic: {
+        $ne: null
+      }
     }
   },
   {
-    $addFields: {
-      filteredArray: {
-        $filter: {
-          input: "$allianceRoutes",
-          as: "route",
-          cond: { 
-            $in: ["$$route.airplane", ["747", "380"]]
+    $facet: {
+      imdbTop10: [
+        {
+          $sort: {
+            "imdb.rating": -1
+          }
+        },
+        { $limit: 10 },
+        {
+          $project: {
+            title: 1,
+            "imdb.rating": 1,
+            metacritic: 1,
+            _id: 0
           }
         }
-      }
-    }
-  },
-  {
-    $addFields: {
-      matchedRoutes: {
-        $size: "$filteredArray"
-      }
-    }
-  },
+      ],
+      metacriticTop10: [
+        {
+          $sort: {
+            metacritic: -1
+          }
+        },
+        { $limit: 10 },
+        {
+          $project: {
+            _id: 0,
+            title: 1,
+            "imdb.rating": 1,
 
+            metacritic: 1
+          }
+        }
+      ]
+    }
+  },
   {
     $project: {
-      _id: 0,
-      name: 1,
-      matchedRoutes: 1
+      common: {
+        $setIntersection: ["$imdbTop10", "$metacriticTop10"]
+      }
     }
   }
 ];
